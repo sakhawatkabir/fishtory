@@ -115,10 +115,6 @@ export default function Sidebar({ isOpen, onClose }) {
             <Fish size={18} className="shrink-0" />
             <span>View Store</span>
           </Link>
-          <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm font-medium text-white/60 hover:bg-red-500/10 hover:text-red-400 transition-colors duration-150 cursor-pointer">
-            <LogOut size={18} className="shrink-0" />
-            <span>Sign Out</span>
-          </button>
         </div>
       </aside>
     </>
