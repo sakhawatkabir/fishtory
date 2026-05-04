@@ -51,7 +51,7 @@ const statusStyles = {
   Cancelled: "bg-red-50 text-red-600",
 };
 
-export default function RecentOrders() {
+const RecentOrders = () => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
@@ -118,4 +118,6 @@ export default function RecentOrders() {
       </div>
     </div>
   );
-}
+};
+
+export default RecentOrders;

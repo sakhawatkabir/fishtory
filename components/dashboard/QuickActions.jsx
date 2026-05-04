@@ -32,7 +32,7 @@ const actions = [
   },
 ];
 
-export default function QuickActions() {
+const QuickActions = () => {
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
@@ -50,7 +50,9 @@ export default function QuickActions() {
               <Icon size={16} className="shrink-0" />
               <div className="min-w-0">
                 <p className="font-semibold truncate">{action.label}</p>
-                <p className="text-xs opacity-60 truncate">{action.description}</p>
+                <p className="text-xs opacity-60 truncate">
+                  {action.description}
+                </p>
               </div>
             </Link>
           );
@@ -58,4 +60,6 @@ export default function QuickActions() {
       </div>
     </div>
   );
-}
+};
+
+export default QuickActions;

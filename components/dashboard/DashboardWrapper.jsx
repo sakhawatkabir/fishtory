@@ -4,7 +4,7 @@ import { Menu, Fish, User, Settings, LogOut, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "./Sidebar";
 
-export default function DashboardWrapper({ children }) {
+const DashboardWrapper = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -109,4 +109,6 @@ export default function DashboardWrapper({ children }) {
       </div>
     </div>
   );
-}
+};
+
+export default DashboardWrapper;

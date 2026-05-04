@@ -46,7 +46,7 @@ const stats = [
   },
 ];
 
-export default function StatsGrid() {
+const StatsGrid = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {stats.map((stat) => {
@@ -61,7 +61,9 @@ export default function StatsGrid() {
               <span className="text-sm font-medium text-gray-500">
                 {stat.label}
               </span>
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${stat.color}`}>
+              <div
+                className={`w-9 h-9 rounded-lg flex items-center justify-center ${stat.color}`}
+              >
                 <Icon size={18} />
               </div>
             </div>
@@ -88,4 +90,6 @@ export default function StatsGrid() {
       })}
     </div>
   );
-}
+};
+
+export default StatsGrid;

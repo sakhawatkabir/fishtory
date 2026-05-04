@@ -23,7 +23,7 @@ const navItems = [
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-export default function Sidebar({ isOpen, onClose }) {
+const Sidebar = ({ isOpen, onClose }) => {
   const pathname = usePathname();
 
   return (
@@ -119,4 +119,6 @@ export default function Sidebar({ isOpen, onClose }) {
       </aside>
     </>
   );
-}
+};
+
+export default Sidebar;

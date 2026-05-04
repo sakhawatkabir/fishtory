@@ -3,7 +3,7 @@ import RecentOrders from "@/components/dashboard/RecentOrders";
 import TopProducts from "@/components/dashboard/TopProducts";
 import QuickActions from "@/components/dashboard/QuickActions";
 
-export default function DashboardPage() {
+const DashboardPage = () => {
   return (
     <div className="space-y-8">
       {/* Page header */}
@@ -31,4 +31,6 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-}
+};
+
+export default DashboardPage;

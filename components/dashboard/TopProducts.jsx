@@ -9,7 +9,7 @@ const products = [
   { name: "Live Mussels 1kg", sold: 134, revenue: "£1,205", stock: 80 },
 ];
 
-export default function TopProducts() {
+const TopProducts = () => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden h-full">
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
@@ -46,4 +46,6 @@ export default function TopProducts() {
       </ul>
     </div>
   );
-}
+};
+
+export default TopProducts;
