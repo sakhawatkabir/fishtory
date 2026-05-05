@@ -14,7 +14,7 @@ import Link from "next/link";
 import RichTextEditor from "./RichTextEditor";
 
 const CATEGORIES = ["Fish", "Shellfish", "Smoked"];
-const STATUSES   = ["Active", "Low Stock", "Out of Stock"];
+const STATUSES = ["Active", "Low Stock", "Out of Stock"];
 
 function slugify(str) {
   return str
@@ -34,7 +34,7 @@ function Field({ label, required, error, children, hint }) {
       </label>
       {children}
       {hint && !error && <p className="text-xs text-gray-400">{hint}</p>}
-      {error  && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 }
@@ -49,20 +49,20 @@ export default function ProductForm({ initialData, mode = "create" }) {
   const isEdit = mode === "edit";
 
   const [form, setForm] = useState({
-    name:        initialData?.name        ?? "",
-    slug:        initialData?.slug        ?? "",
-    sku:         initialData?.sku         ?? "",
-    category:    initialData?.category    ?? "Fish",
-    price:       initialData?.priceNum    ? String(initialData.priceNum) : "",
-    stock:       initialData?.stock       !== undefined ? String(initialData.stock) : "",
-    status:      initialData?.status      ?? "Active",
+    name: initialData?.name ?? "",
+    slug: initialData?.slug ?? "",
+    sku: initialData?.sku ?? "",
+    category: initialData?.category ?? "Fish",
+    price: initialData?.priceNum ? String(initialData.priceNum) : "",
+    stock: initialData?.stock !== undefined ? String(initialData.stock) : "",
+    status: initialData?.status ?? "Active",
     description: initialData?.description ?? "",
-    image:       initialData?.image       ?? "",
+    image: initialData?.image ?? "",
   });
 
-  const [errors, setErrors]   = useState({});
-  const [toast, setToast]     = useState(null);
-  const [saving, setSaving]   = useState(false);
+  const [errors, setErrors] = useState({});
+  const [toast, setToast] = useState(null);
+  const [saving, setSaving] = useState(false);
   const [slugLocked, setSlugLocked] = useState(isEdit);
 
   const showToast = (msg, type = "success") => {
@@ -84,17 +84,17 @@ export default function ProductForm({ initialData, mode = "create" }) {
 
   const validate = () => {
     const e = {};
-    if (!form.name.trim())        e.name     = "Product name is required.";
-    if (!form.slug.trim())        e.slug     = "Slug is required.";
-    if (!form.sku.trim())         e.sku      = "SKU is required.";
-    if (!form.price.trim())       e.price    = "Price is required.";
+    if (!form.name.trim()) e.name = "Product name is required.";
+    if (!form.slug.trim()) e.slug = "Slug is required.";
+    if (!form.sku.trim()) e.sku = "SKU is required.";
+    if (!form.price.trim()) e.price = "Price is required.";
     else if (isNaN(parseFloat(form.price)) || parseFloat(form.price) <= 0)
-                                  e.price    = "Enter a valid price.";
-    if (form.stock === "")        e.stock    = "Stock is required.";
+      e.price = "Enter a valid price.";
+    if (form.stock === "") e.stock = "Stock is required.";
     else if (isNaN(parseInt(form.stock, 10)) || parseInt(form.stock, 10) < 0)
-                                  e.stock    = "Enter a valid stock number.";
+      e.stock = "Enter a valid stock number.";
     if (!form.description.replace(/<[^>]*>/g, "").trim())
-                                  e.description = "Description is required.";
+      e.description = "Description is required.";
     return e;
   };
 
@@ -109,7 +109,11 @@ export default function ProductForm({ initialData, mode = "create" }) {
     setSaving(true);
     setTimeout(() => {
       setSaving(false);
-      showToast(isEdit ? "Product updated successfully." : "Product created successfully.");
+      showToast(
+        isEdit
+          ? "Product updated successfully."
+          : "Product created successfully.",
+      );
       setTimeout(() => router.push("/dashboard/products"), 1200);
     }, 800);
   };
@@ -120,19 +124,31 @@ export default function ProductForm({ initialData, mode = "create" }) {
     <div className="space-y-6">
       {/* Toast */}
       {toast && (
-        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${
-          toast.type === "error" ? "bg-red-500" : toast.type === "warning" ? "bg-amber-500" : "bg-[#2f3a32]"
-        }`}>
-          {toast.type === "error" || toast.type === "warning"
-            ? <AlertTriangle size={15} />
-            : <CheckCircle2 size={15} />}
+        <div
+          className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${
+            toast.type === "error"
+              ? "bg-red-500"
+              : toast.type === "warning"
+                ? "bg-amber-500"
+                : "bg-[#2f3a32]"
+          }`}
+        >
+          {toast.type === "error" || toast.type === "warning" ? (
+            <AlertTriangle size={15} />
+          ) : (
+            <CheckCircle2 size={15} />
+          )}
           {toast.msg}
         </div>
       )}
 
       {/* Back */}
       <Link
-        href={isEdit ? `/dashboard/products/${initialData?.slug}` : "/dashboard/products"}
+        href={
+          isEdit
+            ? `/dashboard/products/${initialData?.slug}`
+            : "/dashboard/products"
+        }
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
       >
         <ArrowLeft size={16} />
@@ -145,19 +161,21 @@ export default function ProductForm({ initialData, mode = "create" }) {
           {isEdit ? `Edit: ${initialData?.name}` : "Add New Product"}
         </h1>
         <p className="text-sm text-gray-500 mt-1">
-          {isEdit ? "Update the product details below." : "Fill in the details to add a new product to your catalogue."}
+          {isEdit
+            ? "Update the product details below."
+            : "Fill in the details to add a new product to your catalogue."}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
           {/* ── Left: main fields ── */}
           <div className="lg:col-span-2 space-y-6">
-
             {/* Basic info */}
             <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-5">
-              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Basic Information</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                Basic Information
+              </h2>
 
               <Field label="Product Name" required error={errors.name}>
                 <input
@@ -199,7 +217,8 @@ export default function ProductForm({ initialData, mode = "create" }) {
                   value={form.description}
                   onChange={(val) => {
                     setForm((prev) => ({ ...prev, description: val }));
-                    if (errors.description) setErrors((prev) => ({ ...prev, description: "" }));
+                    if (errors.description)
+                      setErrors((prev) => ({ ...prev, description: "" }));
                   }}
                   error={errors.description}
                 />
@@ -208,12 +227,16 @@ export default function ProductForm({ initialData, mode = "create" }) {
 
             {/* Pricing & inventory */}
             <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-5">
-              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Pricing & Inventory</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                Pricing & Inventory
+              </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <Field label="Price (£)" required error={errors.price}>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">£</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                      £
+                    </span>
                     <input
                       type="number"
                       min="0"
@@ -237,7 +260,12 @@ export default function ProductForm({ initialData, mode = "create" }) {
                   />
                 </Field>
 
-                <Field label="SKU" required error={errors.sku} hint="Unique product identifier.">
+                <Field
+                  label="SKU"
+                  required
+                  error={errors.sku}
+                  hint="Unique product identifier."
+                >
                   <input
                     type="text"
                     value={form.sku}
@@ -251,9 +279,15 @@ export default function ProductForm({ initialData, mode = "create" }) {
 
             {/* Image */}
             <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-5">
-              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Product Image</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                Product Image
+              </h2>
 
-              <Field label="Image Path" error={errors.image} hint="Enter a path from /public, e.g. /images/product1.webp">
+              <Field
+                label="Image Path"
+                error={errors.image}
+                hint="Enter a path from /public, e.g. /images/product1.webp"
+              >
                 <input
                   type="text"
                   value={form.image}
@@ -264,9 +298,13 @@ export default function ProductForm({ initialData, mode = "create" }) {
               </Field>
 
               {/* Preview */}
-              <div className={`relative w-full h-48 rounded-lg overflow-hidden border-2 border-dashed flex items-center justify-center ${
-                previewImage ? "border-gray-200 bg-gray-50" : "border-gray-200 bg-gray-50"
-              }`}>
+              <div
+                className={`relative w-full h-48 rounded-lg overflow-hidden border-2 border-dashed flex items-center justify-center ${
+                  previewImage
+                    ? "border-gray-200 bg-gray-50"
+                    : "border-gray-200 bg-gray-50"
+                }`}
+              >
                 {previewImage ? (
                   <div className="relative w-full h-full">
                     <Image
@@ -296,10 +334,11 @@ export default function ProductForm({ initialData, mode = "create" }) {
 
           {/* ── Right: + submit ── */}
           <div className="space-y-6">
-
             {/*  */}
             <section className="bg-white border border-gray-200 rounded-lg p-5 space-y-4">
-              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Organisation</h2>
+              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Organisation
+              </h2>
 
               <Field label="Category" required>
                 <select
@@ -308,7 +347,9 @@ export default function ProductForm({ initialData, mode = "create" }) {
                   className={inputCls(false)}
                 >
                   {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
                   ))}
                 </select>
               </Field>
@@ -320,7 +361,9 @@ export default function ProductForm({ initialData, mode = "create" }) {
                   className={inputCls(false)}
                 >
                   {STATUSES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </Field>
@@ -328,29 +371,47 @@ export default function ProductForm({ initialData, mode = "create" }) {
 
             {/* Summary card */}
             <section className="bg-white border border-gray-200 rounded-lg p-5 space-y-3">
-              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Summary</h2>
+              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Summary
+              </h2>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Name</span>
-                  <span className="text-gray-900 font-medium truncate max-w-[140px] text-right">{form.name || "—"}</span>
+                  <span className="text-gray-900 font-medium truncate max-w-[140px] text-right">
+                    {form.name || "—"}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Price</span>
-                  <span className="text-gray-900 font-medium">{form.price ? `£${parseFloat(form.price).toFixed(2)}` : "—"}</span>
+                  <span className="text-gray-900 font-medium">
+                    {form.price ? `£${parseFloat(form.price).toFixed(2)}` : "—"}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Stock</span>
-                  <span className={`font-medium ${
-                    form.stock === "0" ? "text-red-500" : parseInt(form.stock) < 20 ? "text-amber-600" : "text-gray-900"
-                  }`}>{form.stock !== "" ? form.stock : "—"}</span>
+                  <span
+                    className={`font-medium ${
+                      form.stock === "0"
+                        ? "text-red-500"
+                        : parseInt(form.stock) < 20
+                          ? "text-amber-600"
+                          : "text-gray-900"
+                    }`}
+                  >
+                    {form.stock !== "" ? form.stock : "—"}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Category</span>
-                  <span className="text-gray-900 font-medium">{form.category}</span>
+                  <span className="text-gray-900 font-medium">
+                    {form.category}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Status</span>
-                  <span className="text-gray-900 font-medium">{form.status}</span>
+                  <span className="text-gray-900 font-medium">
+                    {form.status}
+                  </span>
                 </div>
               </div>
             </section>
@@ -376,7 +437,11 @@ export default function ProductForm({ initialData, mode = "create" }) {
               </button>
 
               <Link
-                href={isEdit ? `/dashboard/products/${initialData?.slug}` : "/dashboard/products"}
+                href={
+                  isEdit
+                    ? `/dashboard/products/${initialData?.slug}`
+                    : "/dashboard/products"
+                }
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium border border-gray-200 rounded text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 Cancel
