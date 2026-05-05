@@ -2,7 +2,7 @@ import React from "react";
 
 const Pagination = ({ customers, statusStyles }) => {
   return (
-    <div>
+    <>
       {customers.length === 0 ? (
         <tr>
           <td
@@ -52,7 +52,7 @@ const Pagination = ({ customers, statusStyles }) => {
           </tr>
         ))
       )}
-    </div>
+    </>
   );
 };
 
