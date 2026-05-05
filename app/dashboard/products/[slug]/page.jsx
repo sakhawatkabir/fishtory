@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   TrendingUp,
   Star,
+  Pencil,
 } from "lucide-react";
 
 export async function generateStaticParams() {
@@ -109,7 +110,16 @@ export default function ProductDetailPage({ params }) {
             </span>
           </div>
         </div>
-        <p className="text-2xl font-bold text-gray-900">{product.price}</p>
+        <div className="flex items-center gap-3">
+          <p className="text-2xl font-bold text-gray-900">{product.price}</p>
+          <Link
+            href={`/dashboard/products/${product.slug}/edit`}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-200 rounded text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+          >
+            <Pencil size={14} />
+            Edit
+          </Link>
+        </div>
       </div>
 
       {/* Stats row */}

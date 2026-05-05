@@ -1,6 +1,7 @@
 import ProductsTable from "@/components/dashboard/ProductsTable";
 import { allProducts } from "@/lib/data/products";
 import { Package, TrendingDown, AlertTriangle } from "lucide-react";
+import Link from "next/link";
 
 export const metadata = {
   title: "Products | Fish Tory Admin",
@@ -55,10 +56,13 @@ const ProductsPage = () => {
             Manage your product catalogue and inventory.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#2f3a32] text-white px-4 py-2 text-sm font-semibold rounded hover:bg-[#1e2820] transition-colors cursor-pointer">
+        <Link
+          href="/dashboard/products/new"
+          className="flex items-center gap-2 bg-[#2f3a32] text-white px-4 py-2 text-sm font-semibold rounded hover:bg-[#1e2820] transition-colors cursor-pointer"
+        >
           <Package size={15} />
           Add Product
-        </button>
+        </Link>
       </div>
 
       {/* Quick stats */}
