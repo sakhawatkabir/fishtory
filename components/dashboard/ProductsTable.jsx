@@ -1,96 +1,95 @@
 "use client";
-import { useState } from "react";
-import { Search, Pencil, Trash2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Search, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import Image from "next/image";
-
-const products = [
-  {
-    id: 1,
-    name: "Fresh Jersey Oysters x12",
-    category: "Shellfish",
-    price: "£12.99",
-    stock: 48,
-    status: "Active",
-    image: "/images/image2.webp",
-  },
-  {
-    id: 2,
-    name: "Wild Salmon Fillets (2pcs)",
-    category: "Fish",
-    price: "£14.99",
-    stock: 22,
-    status: "Active",
-    image: "/images/img8.webp",
-  },
-  {
-    id: 3,
-    name: "King Prawns 500g",
-    category: "Shellfish",
-    price: "£11.49",
-    stock: 61,
-    status: "Active",
-    image: "/images/img4.webp",
-  },
-  {
-    id: 4,
-    name: "Fresh Scallops x6 in Shells",
-    category: "Shellfish",
-    price: "£18.99",
-    stock: 14,
-    status: "Low Stock",
-    image: "/images/img6.webp",
-  },
-  {
-    id: 5,
-    name: "Fresh Live Mussels 1kg",
-    category: "Shellfish",
-    price: "£8.99",
-    stock: 80,
-    status: "Active",
-    image: "/images/img4.webp",
-  },
-  {
-    id: 6,
-    name: "Whole Trout",
-    category: "Fish",
-    price: "£16.50",
-    stock: 0,
-    status: "Out of Stock",
-    image: "/images/trout1.webp",
-  },
-];
-
-const statusStyles = {
-  Active: "bg-emerald-50 text-emerald-700",
-  "Low Stock": "bg-amber-50 text-amber-700",
-  "Out of Stock": "bg-red-50 text-red-600",
-};
+import Link from "next/link";
+import { allProducts, productStatusStyles, categories } from "@/lib/data/products";
 
 const ProductsTable = () => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch]             = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [currentPage, setCurrentPage]   = useState(1);
+  const [pageSize, setPageSize]         = useState(10);
 
-  const filtered = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filtered = useMemo(() => {
+    return allProducts.filter((p) => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.sku.toLowerCase().includes(search.toLowerCase());
+      const matchesCategory =
+        activeCategory === "All" || p.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [search, activeCategory]);
+
+  const totalPages       = Math.ceil(filtered.length / pageSize);
+  const startIndex       = (currentPage - 1) * pageSize;
+  const endIndex         = startIndex + pageSize;
+  const paginatedProducts = filtered.slice(startIndex, endIndex);
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (cat) => {
+    setActiveCategory(cat);
+    setCurrentPage(1);
+  };
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(Number(e.target.value));
+    setCurrentPage(1);
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+      for (
+        let i = Math.max(2, currentPage - 1);
+        i <= Math.min(totalPages - 1, currentPage + 1);
+        i++
+      ) {
+        if (!pages.includes(i)) pages.push(i);
+      }
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-      {/* Search */}
-      <div className="px-5 py-4 border-b border-gray-100">
-        <div className="relative max-w-sm">
-          <Search
-            size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          />
+      {/* Filters */}
+      <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search products or SKU..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:border-gray-400"
           />
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => handleCategoryChange(cat)}
+              className={`px-3 py-1.5 text-xs font-medium rounded transition-colors duration-150 cursor-pointer ${
+                activeCategory === cat
+                  ? "bg-[#2f3a32] text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -99,44 +98,29 @@ const ProductsTable = () => {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 text-left">
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Product
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">
-                Category
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Price
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Stock
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Product</th>
+              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Category</th>
+              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">SKU</th>
+              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock</th>
+              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {filtered.length === 0 ? (
+            {paginatedProducts.length === 0 ? (
               <tr>
-                <td
-                  colSpan={6}
-                  className="px-5 py-10 text-center text-sm text-gray-400"
-                >
+                <td colSpan={6} className="px-5 py-10 text-center text-sm text-gray-400">
                   No products found.
                 </td>
               </tr>
             ) : (
-              filtered.map((product) => (
-                <tr
-                  key={product.id}
-                  className="hover:bg-gray-50 transition-colors duration-150"
-                >
+              paginatedProducts.map((product) => (
+                <tr key={product.id} className="hover:bg-gray-50 transition-colors duration-150">
                   <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-3">
+                    <Link
+                      href={`/dashboard/products/${product.slug}`}
+                      className="flex items-center gap-3 cursor-pointer"
+                    >
                       <div className="w-10 h-10 rounded overflow-hidden bg-gray-100 shrink-0 relative">
                         <Image
                           src={product.image}
@@ -145,40 +129,23 @@ const ProductsTable = () => {
                           className="object-cover"
                         />
                       </div>
-                      <span className="font-medium text-gray-900 line-clamp-1">
+                      <span className="font-medium text-gray-900 hover:text-[#2f3a32] transition-colors line-clamp-1">
                         {product.name}
                       </span>
-                    </div>
+                    </Link>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-500 hidden md:table-cell">
-                    {product.category}
-                  </td>
-                  <td className="px-5 py-3.5 font-semibold text-gray-900">
-                    {product.price}
-                  </td>
-                  <td className="px-5 py-3.5 text-gray-700">{product.stock}</td>
-                  <td className="px-5 py-3.5">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles[product.status]}`}
-                    >
-                      {product.status}
+                  <td className="px-5 py-3.5 text-gray-500 hidden md:table-cell">{product.category}</td>
+                  <td className="px-5 py-3.5 text-gray-400 font-mono text-xs hidden lg:table-cell">{product.sku}</td>
+                  <td className="px-5 py-3.5 font-semibold text-gray-900">{product.price}</td>
+                  <td className="px-5 py-3.5 text-gray-700">
+                    <span className={product.stock === 0 ? "text-red-500 font-medium" : product.stock < 20 ? "text-amber-600 font-medium" : ""}>
+                      {product.stock}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-2">
-                      <button
-                        aria-label={`Edit ${product.name}`}
-                        className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors duration-150 cursor-pointer"
-                      >
-                        <Pencil size={14} />
-                      </button>
-                      <button
-                        aria-label={`Delete ${product.name}`}
-                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors duration-150 cursor-pointer"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${productStatusStyles[product.status]}`}>
+                      {product.status}
+                    </span>
                   </td>
                 </tr>
               ))
@@ -187,8 +154,61 @@ const ProductsTable = () => {
         </table>
       </div>
 
-      <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-400">
-        Showing {filtered.length} of {products.length} products
+      {/* Footer with Pagination */}
+      <div className="px-5 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500">Show</span>
+          <select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            className="px-2 py-1 text-xs border border-gray-200 rounded bg-white cursor-pointer focus:outline-none focus:border-gray-400"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+          </select>
+          <span className="text-xs text-gray-500">per page</span>
+        </div>
+
+        <div className="text-xs text-gray-500">
+          Showing {filtered.length === 0 ? 0 : startIndex + 1}–{Math.min(endIndex, filtered.length)} of {filtered.length} products
+        </div>
+
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            className="p-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {getPageNumbers().map((page, idx) =>
+            page === "..." ? (
+              <span key={`ellipsis-${idx}`} className="px-2 text-gray-400 text-xs">…</span>
+            ) : (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-2.5 py-1 text-xs rounded border transition-colors cursor-pointer ${
+                  currentPage === page
+                    ? "bg-[#2f3a32] text-white border-[#2f3a32]"
+                    : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {page}
+              </button>
+            ),
+          )}
+
+          <button
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className="p-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
       </div>
     </div>
   );
