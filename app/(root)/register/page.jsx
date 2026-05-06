@@ -1,39 +1,64 @@
 "use client";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const RegisterPage = () => {
-  const [activeTab, setActiveTab] = useState("register");
+  const router = useRouter();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+  const [showPw, setShowPw] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLoginSubmit = () => {};
+  const set = (field) => (e) =>
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
+    setLoading(true);
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    const data = await res.json();
+    setLoading(false);
+
+    if (!res.ok) {
+      setError(data.error || "Something went wrong.");
+      return;
+    }
+
+    setSuccess("Account created! Redirecting to login…");
+    setTimeout(() => router.push("/login"), 1500);
+  };
 
   return (
     <div className="max-w-md mx-auto px-4 py-8">
       <div className="flex items-center justify-center gap-10 py-8">
-        <Link
-          href="/login"
-          className={`text-2xl font-bold ${
-            activeTab === "login" ? "border-b-2 border-black " : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("login")}
-        >
+        <Link href="/login" className="text-2xl font-bold text-gray-500">
           LOGIN
         </Link>
         <Link
           href="/register"
-          className={`text-2xl font-bold ${
-            activeTab === "register"
-              ? "border-b-2 border-black -mb-[2px]"
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("register")}
+          className="text-2xl font-bold border-b-2 border-black"
         >
           CREATE ACCOUNT
         </Link>
@@ -43,39 +68,54 @@ const RegisterPage = () => {
         Please fill the information below
       </h4>
 
-      <form onSubmit={handleLoginSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <label
-            htmlFor="first_name"
-            className="text-sm font-medium text-gray-700"
-          >
-            FirstName
-          </label>
-          <input
-            id="first_name"
-            type="text"
-            required
-            className="w-full px-4 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
+      {error && (
+        <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded mb-4">
+          <AlertCircle size={15} className="shrink-0" />
+          {error}
         </div>
+      )}
 
-        <div className="space-y-2">
-          <label
-            htmlFor="last_name"
-            className="text-sm font-medium text-gray-700"
-          >
-            LastName
-          </label>
-          <input
-            id="last_name"
-            type="text"
-            required
-            className="w-full px-4 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+      {success && (
+        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded mb-4">
+          <CheckCircle2 size={15} className="shrink-0" />
+          {success}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label
+              htmlFor="first_name"
+              className="text-sm font-medium text-gray-700"
+            >
+              First Name
+            </label>
+            <input
+              id="first_name"
+              type="text"
+              required
+              className="w-full px-4 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
+              value={form.firstName}
+              onChange={set("firstName")}
+            />
+          </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="last_name"
+              className="text-sm font-medium text-gray-700"
+            >
+              Last Name
+            </label>
+            <input
+              id="last_name"
+              type="text"
+              required
+              className="w-full px-4 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
+              value={form.lastName}
+              onChange={set("lastName")}
+            />
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -86,9 +126,10 @@ const RegisterPage = () => {
             id="email"
             type="email"
             required
+            autoComplete="email"
             className="w-full px-4 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={form.email}
+            onChange={set("email")}
           />
         </div>
 
@@ -102,55 +143,35 @@ const RegisterPage = () => {
           <div className="relative">
             <input
               id="password"
-              type={showLoginPassword ? "text" : "password"}
+              type={showPw ? "text" : "password"}
               required
+              autoComplete="new-password"
               className="w-full px-4 py-2.5 border border-gray-300 focus:border-black focus:outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={form.password}
+              onChange={set("password")}
             />
             <button
               type="button"
-              className="absolute inset-y-0 right-0 pr-3 flex items-center"
-              onClick={() => setShowLoginPassword(!showLoginPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+              onClick={() => setShowPw(!showPw)}
             >
-              {showLoginPassword ? (
+              {showPw ? (
                 <EyeOff className="h-5 w-5 text-gray-400" />
               ) : (
                 <Eye className="h-5 w-5 text-gray-400" />
               )}
             </button>
           </div>
+          <p className="text-xs text-gray-400">Minimum 8 characters.</p>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              type="checkbox"
-              className="h-4 w-4 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="remember-me"
-              className="ml-2 block text-sm text-gray-700"
-            >
-              Remember me
-            </label>
-          </div>
-
-          <a href="#" className="text-sm text-blue-600 hover:underline">
-            Forgot password?
-          </a>
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="px-6 py-3 font-bold uppercase text-sm 
-                 bg-black text-white hover:bg-gray-800
-              transition-colors w-full"
-          >
-            Register
-          </button>
-        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full px-6 py-3 font-bold uppercase text-sm bg-black text-white hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? "Creating account…" : "Register"}
+        </button>
       </form>
     </div>
   );
