@@ -12,16 +12,20 @@ import {
   ChevronRight,
   X,
   Tag,
+  Truck,
+  Mail,
 } from "lucide-react";
 
 const navItems = [
-  { label: "Overview",   href: "/dashboard",            icon: LayoutDashboard },
-  { label: "Orders",     href: "/dashboard/orders",     icon: ShoppingBag },
-  { label: "Products",   href: "/dashboard/products",   icon: Package },
-  { label: "Customers",  href: "/dashboard/customers",  icon: Users },
-  { label: "Discounts",  href: "/dashboard/discounts",  icon: Tag },
-  { label: "Analytics",  href: "/dashboard/analytics",  icon: BarChart2 },
-  { label: "Settings",   href: "/dashboard/settings",   icon: Settings },
+  { label: "Overview",   href: "/dashboard",             icon: LayoutDashboard },
+  { label: "Orders",     href: "/dashboard/orders",      icon: ShoppingBag },
+  { label: "Delivery",   href: "/dashboard/delivery",    icon: Truck },
+  { label: "Products",   href: "/dashboard/products",    icon: Package },
+  { label: "Customers",  href: "/dashboard/customers",   icon: Users },
+  { label: "Discounts",  href: "/dashboard/discounts",   icon: Tag },
+  { label: "Newsletter", href: "/dashboard/newsletter",  icon: Mail },
+  { label: "Analytics",  href: "/dashboard/analytics",   icon: BarChart2 },
+  { label: "Settings",   href: "/dashboard/settings",    icon: Settings },
 ];
 
 const Sidebar = ({ isOpen, onClose }) => {
