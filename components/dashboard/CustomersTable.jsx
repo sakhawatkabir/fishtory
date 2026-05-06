@@ -1,34 +1,284 @@
 "use client";
 import { useState, useMemo } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import Pagination from "./Pagination";
+import Link from "next/link";
 
-const allCustomers = [
-  { id: 1, name: "James Whitfield", email: "james@example.com", orders: 14, spent: "£312.45", joined: "Jan 2025", status: "Active" },
-  { id: 2, name: "Sophie Turner", email: "sophie@example.com", orders: 8, spent: "£187.20", joined: "Mar 2025", status: "Active" },
-  { id: 3, name: "Marcus Reid", email: "marcus@example.com", orders: 22, spent: "£498.76", joined: "Nov 2024", status: "Active" },
-  { id: 4, name: "Priya Sharma", email: "priya@example.com", orders: 5, spent: "£94.95", joined: "Apr 2026", status: "Active" },
-  { id: 5, name: "Tom Hargreaves", email: "tom@example.com", orders: 3, spent: "£67.47", joined: "Feb 2026", status: "Inactive" },
-  { id: 6, name: "Lily Chen", email: "lily@example.com", orders: 19, spent: "£421.33", joined: "Sep 2024", status: "Active" },
-  { id: 7, name: "David Okafor", email: "david@example.com", orders: 7, spent: "£156.93", joined: "Dec 2024", status: "Active" },
-  { id: 8, name: "Emma Walsh", email: "emma@example.com", orders: 31, spent: "£712.80", joined: "Aug 2024", status: "Active" },
-  { id: 9, name: "Oliver Brown", email: "oliver@example.com", orders: 12, spent: "£289.54", joined: "Oct 2024", status: "Active" },
-  { id: 10, name: "Ava Martinez", email: "ava@example.com", orders: 6, spent: "£143.88", joined: "Feb 2025", status: "Active" },
-  { id: 11, name: "Noah Wilson", email: "noah@example.com", orders: 18, spent: "£401.22", joined: "Jul 2024", status: "Active" },
-  { id: 12, name: "Isabella Garcia", email: "isabella@example.com", orders: 9, spent: "£198.76", joined: "Jan 2025", status: "Inactive" },
-  { id: 13, name: "Liam Anderson", email: "liam@example.com", orders: 25, spent: "£567.89", joined: "Jun 2024", status: "Active" },
-  { id: 14, name: "Mia Thomas", email: "mia@example.com", orders: 11, spent: "£267.43", joined: "Nov 2024", status: "Active" },
-  { id: 15, name: "Ethan Taylor", email: "ethan@example.com", orders: 4, spent: "£89.32", joined: "Mar 2025", status: "Active" },
-  { id: 16, name: "Charlotte Moore", email: "charlotte@example.com", orders: 16, spent: "£378.91", joined: "Aug 2024", status: "Active" },
-  { id: 17, name: "Lucas Jackson", email: "lucas@example.com", orders: 20, spent: "£456.78", joined: "Sep 2024", status: "Active" },
-  { id: 18, name: "Amelia White", email: "amelia@example.com", orders: 7, spent: "£162.45", joined: "Dec 2024", status: "Inactive" },
-  { id: 19, name: "Mason Harris", email: "mason@example.com", orders: 13, spent: "£301.23", joined: "Oct 2024", status: "Active" },
-  { id: 20, name: "Harper Martin", email: "harper@example.com", orders: 10, spent: "£234.56", joined: "Jan 2025", status: "Active" },
-  { id: 21, name: "Elijah Thompson", email: "elijah@example.com", orders: 24, spent: "£543.21", joined: "May 2024", status: "Active" },
-  { id: 22, name: "Evelyn Lee", email: "evelyn@example.com", orders: 8, spent: "£176.54", joined: "Feb 2025", status: "Active" },
-  { id: 23, name: "Benjamin Walker", email: "benjamin@example.com", orders: 15, spent: "£345.67", joined: "Jul 2024", status: "Active" },
-  { id: 24, name: "Abigail Hall", email: "abigail@example.com", orders: 6, spent: "£132.10", joined: "Mar 2025", status: "Inactive" },
-  { id: 25, name: "Logan Allen", email: "logan@example.com", orders: 19, spent: "£432.98", joined: "Aug 2024", status: "Active" },
+export const allCustomers = [
+  {
+    id: 1,
+    name: "James Whitfield",
+    email: "james@example.com",
+    phone: "+44 7700 900001",
+    orders: 14,
+    spent: "£312.45",
+    joined: "Jan 2025",
+    status: "Active",
+    location: "London, UK",
+  },
+  {
+    id: 2,
+    name: "Sophie Turner",
+    email: "sophie@example.com",
+    phone: "+44 7700 900002",
+    orders: 8,
+    spent: "£187.20",
+    joined: "Mar 2025",
+    status: "Active",
+    location: "Manchester, UK",
+  },
+  {
+    id: 3,
+    name: "Marcus Reid",
+    email: "marcus@example.com",
+    phone: "+44 7700 900003",
+    orders: 22,
+    spent: "£498.76",
+    joined: "Nov 2024",
+    status: "Active",
+    location: "Birmingham, UK",
+  },
+  {
+    id: 4,
+    name: "Priya Sharma",
+    email: "priya@example.com",
+    phone: "+44 7700 900004",
+    orders: 5,
+    spent: "£94.95",
+    joined: "Apr 2026",
+    status: "Active",
+    location: "Leeds, UK",
+  },
+  {
+    id: 5,
+    name: "Tom Hargreaves",
+    email: "tom@example.com",
+    phone: "+44 7700 900005",
+    orders: 3,
+    spent: "£67.47",
+    joined: "Feb 2026",
+    status: "Inactive",
+    location: "Bristol, UK",
+  },
+  {
+    id: 6,
+    name: "Lily Chen",
+    email: "lily@example.com",
+    phone: "+44 7700 900006",
+    orders: 19,
+    spent: "£421.33",
+    joined: "Sep 2024",
+    status: "Active",
+    location: "Edinburgh, UK",
+  },
+  {
+    id: 7,
+    name: "David Okafor",
+    email: "david@example.com",
+    phone: "+44 7700 900007",
+    orders: 7,
+    spent: "£156.93",
+    joined: "Dec 2024",
+    status: "Active",
+    location: "Liverpool, UK",
+  },
+  {
+    id: 8,
+    name: "Emma Walsh",
+    email: "emma@example.com",
+    phone: "+44 7700 900008",
+    orders: 31,
+    spent: "£712.80",
+    joined: "Aug 2024",
+    status: "Active",
+    location: "Glasgow, UK",
+  },
+  {
+    id: 9,
+    name: "Oliver Brown",
+    email: "oliver@example.com",
+    phone: "+44 7700 900009",
+    orders: 12,
+    spent: "£289.54",
+    joined: "Oct 2024",
+    status: "Active",
+    location: "Sheffield, UK",
+  },
+  {
+    id: 10,
+    name: "Ava Martinez",
+    email: "ava@example.com",
+    phone: "+44 7700 900010",
+    orders: 6,
+    spent: "£143.88",
+    joined: "Feb 2025",
+    status: "Active",
+    location: "Cardiff, UK",
+  },
+  {
+    id: 11,
+    name: "Noah Wilson",
+    email: "noah@example.com",
+    phone: "+44 7700 900011",
+    orders: 18,
+    spent: "£401.22",
+    joined: "Jul 2024",
+    status: "Active",
+    location: "Nottingham, UK",
+  },
+  {
+    id: 12,
+    name: "Isabella Garcia",
+    email: "isabella@example.com",
+    phone: "+44 7700 900012",
+    orders: 9,
+    spent: "£198.76",
+    joined: "Jan 2025",
+    status: "Inactive",
+    location: "Leicester, UK",
+  },
+  {
+    id: 13,
+    name: "Liam Anderson",
+    email: "liam@example.com",
+    phone: "+44 7700 900013",
+    orders: 25,
+    spent: "£567.89",
+    joined: "Jun 2024",
+    status: "Active",
+    location: "Newcastle, UK",
+  },
+  {
+    id: 14,
+    name: "Mia Thomas",
+    email: "mia@example.com",
+    phone: "+44 7700 900014",
+    orders: 11,
+    spent: "£267.43",
+    joined: "Nov 2024",
+    status: "Active",
+    location: "Southampton, UK",
+  },
+  {
+    id: 15,
+    name: "Ethan Taylor",
+    email: "ethan@example.com",
+    phone: "+44 7700 900015",
+    orders: 4,
+    spent: "£89.32",
+    joined: "Mar 2025",
+    status: "Active",
+    location: "Oxford, UK",
+  },
+  {
+    id: 16,
+    name: "Charlotte Moore",
+    email: "charlotte@example.com",
+    phone: "+44 7700 900016",
+    orders: 16,
+    spent: "£378.91",
+    joined: "Aug 2024",
+    status: "Active",
+    location: "Cambridge, UK",
+  },
+  {
+    id: 17,
+    name: "Lucas Jackson",
+    email: "lucas@example.com",
+    phone: "+44 7700 900017",
+    orders: 20,
+    spent: "£456.78",
+    joined: "Sep 2024",
+    status: "Active",
+    location: "Brighton, UK",
+  },
+  {
+    id: 18,
+    name: "Amelia White",
+    email: "amelia@example.com",
+    phone: "+44 7700 900018",
+    orders: 7,
+    spent: "£162.45",
+    joined: "Dec 2024",
+    status: "Inactive",
+    location: "Coventry, UK",
+  },
+  {
+    id: 19,
+    name: "Mason Harris",
+    email: "mason@example.com",
+    phone: "+44 7700 900019",
+    orders: 13,
+    spent: "£301.23",
+    joined: "Oct 2024",
+    status: "Active",
+    location: "Hull, UK",
+  },
+  {
+    id: 20,
+    name: "Harper Martin",
+    email: "harper@example.com",
+    phone: "+44 7700 900020",
+    orders: 10,
+    spent: "£234.56",
+    joined: "Jan 2025",
+    status: "Active",
+    location: "Stoke, UK",
+  },
+  {
+    id: 21,
+    name: "Elijah Thompson",
+    email: "elijah@example.com",
+    phone: "+44 7700 900021",
+    orders: 24,
+    spent: "£543.21",
+    joined: "May 2024",
+    status: "Active",
+    location: "Derby, UK",
+  },
+  {
+    id: 22,
+    name: "Evelyn Lee",
+    email: "evelyn@example.com",
+    phone: "+44 7700 900022",
+    orders: 8,
+    spent: "£176.54",
+    joined: "Feb 2025",
+    status: "Active",
+    location: "Plymouth, UK",
+  },
+  {
+    id: 23,
+    name: "Benjamin Walker",
+    email: "benjamin@example.com",
+    phone: "+44 7700 900023",
+    orders: 15,
+    spent: "£345.67",
+    joined: "Jul 2024",
+    status: "Active",
+    location: "Wolverhampton, UK",
+  },
+  {
+    id: 24,
+    name: "Abigail Hall",
+    email: "abigail@example.com",
+    phone: "+44 7700 900024",
+    orders: 6,
+    spent: "£132.10",
+    joined: "Mar 2025",
+    status: "Inactive",
+    location: "Swansea, UK",
+  },
+  {
+    id: 25,
+    name: "Logan Allen",
+    email: "logan@example.com",
+    phone: "+44 7700 900025",
+    orders: 19,
+    spent: "£432.98",
+    joined: "Aug 2024",
+    status: "Active",
+    location: "Belfast, UK",
+  },
 ];
 
 const statusStyles = {
@@ -41,13 +291,15 @@ const CustomersTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const filtered = useMemo(() => {
-    return allCustomers.filter(
-      (c) =>
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.email.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [search]);
+  const filtered = useMemo(
+    () =>
+      allCustomers.filter(
+        (c) =>
+          c.name.toLowerCase().includes(search.toLowerCase()) ||
+          c.email.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [search],
+  );
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
@@ -58,7 +310,6 @@ const CustomersTable = () => {
     setSearch(e.target.value);
     setCurrentPage(1);
   };
-
   const handlePageSizeChange = (e) => {
     setPageSize(Number(e.target.value));
     setCurrentPage(1);
@@ -66,12 +317,8 @@ const CustomersTable = () => {
 
   const getPageNumbers = () => {
     const pages = [];
-    const maxVisible = 5;
-
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       pages.push(1);
       if (currentPage > 3) pages.push("...");
@@ -133,8 +380,60 @@ const CustomersTable = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            
-            <Pagination statusStyles={statusStyles} customers={paginatedCustomers}/>
+            {paginatedCustomers.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-5 py-10 text-center text-sm text-gray-400"
+                >
+                  No customers found.
+                </td>
+              </tr>
+            ) : (
+              paginatedCustomers.map((customer) => (
+                <tr
+                  key={customer.id}
+                  className="hover:bg-gray-50 transition-colors duration-150"
+                >
+                  <td className="px-5 py-3.5">
+                    <Link
+                      href={`/dashboard/customers/${customer.id}`}
+                      className="flex items-center gap-3 cursor-pointer"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-[#2f3a32] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                        {customer.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .slice(0, 2)}
+                      </div>
+                      <span className="font-medium text-gray-900 hover:text-[#2f3a32] transition-colors">
+                        {customer.name}
+                      </span>
+                    </Link>
+                  </td>
+                  <td className="px-5 py-3.5 text-gray-500 hidden lg:table-cell">
+                    {customer.email}
+                  </td>
+                  <td className="px-5 py-3.5 text-gray-700">
+                    {customer.orders}
+                  </td>
+                  <td className="px-5 py-3.5 font-semibold text-gray-900">
+                    {customer.spent}
+                  </td>
+                  <td className="px-5 py-3.5 text-gray-500 hidden md:table-cell">
+                    {customer.joined}
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles[customer.status]}`}
+                    >
+                      {customer.status}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -155,45 +454,39 @@ const CustomersTable = () => {
           </select>
           <span className="text-xs text-gray-500">per page</span>
         </div>
-
         <div className="text-xs text-gray-500">
-          Showing {startIndex + 1}-{Math.min(endIndex, filtered.length)} of{" "}
-          {filtered.length} customers
+          Showing {filtered.length === 0 ? 0 : startIndex + 1}–
+          {Math.min(endIndex, filtered.length)} of {filtered.length} customers
         </div>
-
         <div className="flex items-center gap-1">
           <button
             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className="p-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer"
+            className="p-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <ChevronLeft size={16} />
           </button>
-
           {getPageNumbers().map((page, idx) =>
             page === "..." ? (
-              <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
-                ...
+              <span key={`e-${idx}`} className="px-2 text-gray-400 text-xs">
+                …
               </span>
             ) : (
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`px-2.5 py-1 text-xs rounded border transition-colors duration-150 cursor-pointer ${
-                  currentPage === page
-                    ? "bg-[#2f3a32] text-white border-[#2f3a32]"
-                    : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                }`}
+                className={`px-2.5 py-1 text-xs rounded border transition-colors cursor-pointer ${currentPage === page ? "bg-[#2f3a32] text-white border-[#2f3a32]" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
               >
                 {page}
               </button>
             ),
           )}
-
           <button
-            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-            className="p-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer"
+            onClick={() =>
+              setCurrentPage(Math.min(totalPages, currentPage + 1))
+            }
+            disabled={currentPage === totalPages || totalPages === 0}
+            className="p-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <ChevronRight size={16} />
           </button>
