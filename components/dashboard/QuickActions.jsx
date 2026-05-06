@@ -17,13 +17,6 @@ const actions = [
     color: "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50",
   },
   {
-    label: "Manage Delivery",
-    description: "Update delivery zones",
-    href: "/dashboard/delivery",
-    icon: Truck,
-    color: "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50",
-  },
-  {
     label: "Send Newsletter",
     description: "Email your subscribers",
     href: "/dashboard/newsletter",
@@ -38,7 +31,7 @@ const QuickActions = () => {
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
         Quick Actions
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {actions.map((action) => {
           const Icon = action.icon;
           return (
